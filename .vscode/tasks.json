@@ -1,0 +1,20 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build",
+			"type": "shell",
+			"command": "gcc ${file} -o ${fileDirname}/dist/${fileBasenameNoExtension}.exe",
+			"problemMatcher": "$gcc",
+			"presentation": {
+				"reveal": "silent",
+				"revealProblems": "onProblem",
+				"c\": true
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}
