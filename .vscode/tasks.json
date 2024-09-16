@@ -9,7 +9,7 @@
 			"presentation": {
 				"reveal": "silent",
 				"revealProblems": "onProblem",
-				"c\": true
+				"clear": false
 			},
 			"group": {
 				"kind": "build",
