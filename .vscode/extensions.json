@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "vscodevim.vim",
+        "ms-vscode.cpptools",
+        "michaelcurrin.auto-commit-msg",
+    ]
+}
