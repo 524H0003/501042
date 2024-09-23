@@ -57,14 +57,17 @@ int writef(const char *fmt, ...)
 
 int main()
 {
-	int a, b;
 	open("test");
+	int a, b, t;
+
 	readf("%d %d", &a, &b);
 
-	if (a > b)
-		a ^= b, b ^= a, a ^= b;
+	while (b > 0)
+		t = a % b,
+		a = b,
+		b = t;
 
-	writef("%d %d", a, b);
+	writef("%d", a);
 
 	return 0;
 }
