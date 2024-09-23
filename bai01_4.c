@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
+#include <stdlib.h>
+#include <signal.h>
 
 #define ll long long
 #define ull unsigned long long
@@ -34,6 +37,9 @@ FILE *inputFile, *outputFile;
 void open(char fileName[])
 {
 	inputFile = fopen(combineStrings(fileName, ".INP"), "r");
+	if (inputFile == NULL)
+		raise(SIGABRT);
+
 	outputFile = fopen(combineStrings(fileName, ".OUT"), "w");
 }
 
