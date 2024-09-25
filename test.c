@@ -12,13 +12,6 @@
 #define vl vector<ll>
 #define vii vector<pii>
 #define vll vector<pll>
-
-#define for0(i, n) for (int i = 0; i < (int)(n); ++i)
-#define for1(i, n) for (int i = 1; i <= (int)(n); ++i)
-#define forc(i, l, r) for (int i = (int)(l); i <= (int)(r); ++i)
-#define forr0(i, n) for (int i = (int)(n) - 1; i >= 0; --i)
-#define forr1(i, n) for (int i = (int)(n); i >= 1; --i)
-
 #define pb push_back
 #define fi first
 #define se second
@@ -38,7 +31,10 @@ void open(char fileName[])
 {
 	inputFile = fopen(combineStrings(fileName, ".INP"), "r");
 	if (inputFile == NULL)
+	{
+		printf(combineStrings(combineStrings(fileName, ".INP")," not found"));
 		raise(SIGABRT);
+	}
 
 	outputFile = fopen(combineStrings(fileName, ".OUT"), "w");
 }
@@ -63,6 +59,8 @@ int writef(const char *fmt, ...)
 
 int main()
 {
+	open("lmao");
+	writef("lmaodsafhpoahf");
 
 	return 0;
 }
