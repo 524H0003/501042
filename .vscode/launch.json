@@ -12,7 +12,7 @@
 			"program": "${fileDirname}/dist/${fileBasenameNoExtension}.exe",
 			"stopAtEntry": false,
 			"cwd": "${fileDirname}/tests",
-			"externalConsole": false,
+			"externalConsole": true,
 			"MIMode": "gdb",
 			"miDebuggerPath": "gdb",
 			"preLaunchTask": "Build",
