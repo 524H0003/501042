@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <math.h>
-#include <limits.h>
 #include <stdbool.h>
 
 #define ll long long
@@ -26,10 +25,7 @@ void open(char[]);
 void readf(const char *, ...);
 void writef(const char *, ...);
 
-#define MAX_CLASSES 10
-#define MAX_STUDENTS 30
-
-int readUserInput(char *type, int smallerThan)
+int readUserInput(char *type)
 {
 	int input;
 
@@ -37,61 +33,51 @@ int readUserInput(char *type, int smallerThan)
 	{
 		writef("Input %s: ", type);
 		readf("%d", &input);
-	} while (input >= smallerThan || input < 0);
+		if (input < 0)
+			return -1;
+	} while (input < 0);
 
 	return input;
 }
 
-int readDataInput(int isEnrol[][MAX_CLASSES], int numClasses, int numStudents)
-{
-	int entries = readUserInput("number of data entries", INT_MAX), i;
-	writef("Enter %d data entries (student class): \n", entries);
-	for (i = 0; i < entries; i++)
-		isEnrol[readUserInput("student", numStudents)][readUserInput("class", numClasses)] = 1;
-}
-
-int classWithMostStudent(int isEnrol[][MAX_CLASSES], int numClasses, int numStudents)
-{
-	int class = numClasses, i, j;
-
-	for (i = 0; i < numClasses; i++)
-	{
-		for (j = 0; j < numStudents; j++)
-			isEnrol[numStudents][i] += isEnrol[j][i];
-		if (isEnrol[numStudents][i] > isEnrol[numStudents][class])
-			class = i;
-	}
-
-	return class;
-}
-
-void nameStudentsWithClasses(int isEnrol[][MAX_CLASSES], int numClasses, int numStudents)
-{
-	int i, j;
-
-	for (i = 0; i < numClasses; i++)
-	{
-		writef("Class number %d\n", i);
-
-		for (j = 0; j < numStudents; j++)
-			if (isEnrol[j][i])
-				writef("\tStudent %d\n", j);
-	}
-}
-
+#define nums_size 1000
 const int isReadFile = false;
 int main()
 {
 	open("test");
-	int numClasses, numStudents, isEnrol[MAX_STUDENTS][MAX_CLASSES] = {{0}};
+	int n, nums[nums_size][2], i;
 
-	writef("Number of classes and students\n");
-	numClasses = readUserInput("number of clases", MAX_CLASSES);
-	numStudents = readUserInput("number of students", MAX_STUDENTS);
-	readDataInput(isEnrol, numClasses, numStudents);
+	for (i = 0; i < nums_size; i++)
+		for (n = 0; n < 2; n++)
+			nums[i][n] = 0;
 
-	writef("Class with most student: %d", classWithMostStudent(isEnrol, numClasses, numStudents));
-	nameStudentsWithClasses(isEnrol, numClasses, numStudents);
+	i = 1, n = -1;
+	do
+	{
+		if (n >= 0 && (!nums[n][0] || !nums[n][1]))
+			if (!nums[n][0])
+				nums[n][0] = i++;
+			else
+				nums[n][1] = i++;
+		n = readUserInput("num");
+	} while (n >= 0);
+	n = readUserInput("target");
+
+	for (i = 0; i <= n / 2; i++)
+		if (i != n - i)
+		{
+			if (nums[i][0] && nums[n - i][0])
+			{
+				writef("[%d, %d]", nums[i][0] - 1, nums[n - i][0] - 1);
+				return 0;
+			}
+		}
+		else if (nums[i][0] && nums[i][1])
+		{
+			writef("[%d, %d]", nums[i][0] - 1, nums[i][1] - 1);
+			return 0;
+		}
+	writef("No solution");
 
 	return 0;
 }
