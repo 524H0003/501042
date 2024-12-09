@@ -1,66 +1,30 @@
 #include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <stdlib.h>
-#include <signal.h>
 
-#define ll long long
-#define ull unsigned long long
-#define pii pair<int, int>
-#define pll pair<ll, ll>
-#define vi vector<int>
-#define vl vector<ll>
-#define vii vector<pii>
-#define vll vector<pll>
-#define pb push_back
-#define fi first
-#define se second
-
-char *combineStrings(char *str1, char *str2)
+int main()  
 {
-	char *combined = (char *)malloc((strlen(str1) + strlen(str2) + 1) * sizeof(char));
+     
+    char str1[] = "Chao \0";
+    char str2[] = "thay!\0";
+    char result[50]; 
 
-	strcpy(combined, str1);
-	strcat(combined, str2);
+    int i = 0, j = 0;
 
-	return combined;
-}
+    while (str1[i] != '\0')  
+    {
+        result[i] = str1[i];
+        i++;
+    }
 
-FILE *inputFile, *outputFile;
-void open(char fileName[])
-{
-	inputFile = fopen(combineStrings(fileName, ".INP"), "r");
-	if (inputFile == NULL)
-	{
-		printf(combineStrings(combineStrings(fileName, ".INP")," not found"));
-		raise(SIGABRT);
-	}
+    while (str2[j] != '\0') 
+    {
+        result[i] = str2[j];
+        i++;
+        j++;
+    }
 
-	outputFile = fopen(combineStrings(fileName, ".OUT"), "w");
-}
+    result[i] = '\0';
 
-int readf(const char *fmt, ...)
-{
-	va_list args;
-	va_start(args, fmt);
-	int rc = vfscanf(inputFile, fmt, args);
-	va_end(args);
-	return rc;
-}
+    printf("Chuoi sau khi noi: %s\n", result);
 
-int writef(const char *fmt, ...)
-{
-	va_list args;
-	va_start(args, fmt);
-	int rc = vfprintf(outputFile, fmt, args);
-	va_end(args);
-	return rc;
-}
-
-int main()
-{
-	open("lmao");
-	writef("lmaodsafhpoahf");
-
-	return 0;
+    return 0;
 }
