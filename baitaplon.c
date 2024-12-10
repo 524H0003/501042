@@ -82,7 +82,7 @@ void solve(const int n, const int ld, const float *nPerBC, const float *nPerBG, 
 	}
 }
 
-const isReadFile = true;
+const isReadFile = false;
 int main()
 {
 	open();

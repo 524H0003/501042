@@ -50,7 +50,7 @@ ll int giaiThua(ll int n)
 	return 1;
 }
 
-const isReadFile = true;
+const isReadFile = false;
 int main()
 {
 	open("test");

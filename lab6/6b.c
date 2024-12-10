@@ -38,18 +38,20 @@ int readUserInput(char *type)
 	return input;
 }
 
+double solve(const int n)
+{
+	if (n)
+		return (float)n / 2.0 + solve(n - 1);
+	return 0;
+}
+
 const isReadFile = false;
 int main()
 {
 	open("test");
 	int n = readUserInput("n");
-	double ou = 0;
 
-	do
-		ou += (float)n / 2.0;
-	while (--n);
-
-	writef("Output: %.5f", ou);
+	writef("Output: %.5f", solve(n));
 
 	return 0;
 }

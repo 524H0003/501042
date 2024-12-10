@@ -46,7 +46,7 @@ void recursive(int n)
 	writef("%d ", i);
 }
 
-const isReadFile = true;
+const isReadFile = false;
 int main()
 {
 	open("test");

@@ -40,7 +40,7 @@ int readUserInput(const char *type, ...)
 }
 
 #define ARR_LENGTH 100000
-const isReadFile = true;
+const isReadFile = false;
 int main()
 {
 	open("test");

@@ -38,17 +38,20 @@ int readUserInput(char *type)
 	return input;
 }
 
-const isReadFile = false;
+ll int solve(const int n)
+{
+	if (n)
+		return 2 * n + 1 + (solve(n - 1));
+	return 0;
+}
+
+const isReadFile = true;
 int main()
 {
 	open("test");
-	int n = readUserInput("n"), ou = 0;
+	int n = readUserInput("n");
 
-	do
-		ou += 2 * n + 1;
-	while (--n);
-
-	writef("Output: %d", ou);
+	writef("Output: %d", solve(n));
 
 	return 0;
 }

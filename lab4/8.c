@@ -39,7 +39,7 @@ int readUserInput(const char *type, ...)
 	return input;
 }
 
-const isReadFile = true;
+const isReadFile = false;
 int main()
 {
 	open("test");
