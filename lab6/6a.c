@@ -45,7 +45,7 @@ ll int solve(const int n)
 	return 0;
 }
 
-const isReadFile = true;
+const isReadFile = false;
 int main()
 {
 	open("test");
