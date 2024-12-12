@@ -154,6 +154,11 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 		}
 		swap(order, order + 1);
 		break;
+
+	default:
+		writef("-1 -1 %d", n);
+		exit(0);
+		break;
 	}
 
 	arr[0][0] = n, arr[0][1] = arr[0][2] = 0;
@@ -204,6 +209,12 @@ int main()
 	open();
 
 	float n = readInt(), dc = readInt(), dg = readInt(), ld = readInt(), w = readChar();
+
+	if (n > 2000 || dc < 0 || dg < 0 || ld < 1 || ld > 600)
+	{
+		writef("-1 -1 %d", n);
+		return 0;
+	}
 
 	solve(n, ld, dc, dg, w);
 
