@@ -203,7 +203,7 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 	writef("%.0f %.0f %.3f", arr[600][1], arr[600][2], arr[600][0]);
 }
 
-const isReadFile = false;
+const isReadFile = true;
 int main()
 {
 	open();
