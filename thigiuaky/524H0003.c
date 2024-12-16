@@ -162,7 +162,7 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 	}
 
 	arr[0][0] = n, arr[0][1] = arr[0][2] = 0;
-	for (i = 1; i < 601; i++) // la dong
+	for (i = 1; i <= ld; i++) // la dong
 	{
 		float curN;
 		memcpy(arr[i], arr[i - 1], sizeof(int) * 3);
@@ -200,10 +200,9 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 			}
 	}
 
-	writef("%.0f %.0f %.3f", arr[600][1], arr[600][2], arr[600][0]);
+	writef("%.0f %.0f %.3f", arr[ld][1], arr[ld][2], arr[ld][0]);
 }
 
-const isReadFile = true;
 int main()
 {
 	open();
@@ -234,9 +233,6 @@ char *combineStrings(char *str1, char *str2)
 FILE *inputFile, *outputFile;
 void open()
 {
-	if (!isReadFile)
-		return;
-
 	inputFile = fopen(combineStrings("input", ".INP"), "r");
 	if (inputFile == NULL)
 	{
@@ -251,10 +247,7 @@ void readf(const char *fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
-	if (isReadFile)
-		vfscanf(inputFile, fmt, args);
-	else
-		vscanf(fmt, args);
+	vfscanf(inputFile, fmt, args);
 	va_end(args);
 }
 
@@ -262,9 +255,6 @@ void writef(const char *fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
-	if (isReadFile)
-		vfprintf(outputFile, fmt, args);
-	else
-		vprintf(fmt, args);
+	vfprintf(outputFile, fmt, args);
 	va_end(args);
 }
