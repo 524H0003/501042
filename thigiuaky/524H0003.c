@@ -123,7 +123,7 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 
 	// Order: 1 (Banh chung); 2 (Banh giay); 3 (Bang nhau)
 	float nPerBC = makeBC(dc), nPerBG = makeBG(dg), arr[601][3];
-	int ldPerBC = (dc < 8) + 1, ldPerBG = (dg < 5) + 1, order[] = {1, 2, 3};
+	int ldPerBC = (dc >= 8) + 1, ldPerBG = (dg >= 5) + 1, order[] = {1, 2, 3};
 
 	switch ((int)toupper(w))
 	{
