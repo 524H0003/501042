@@ -27,6 +27,21 @@ void open();
 void readf(const char *, ...);
 void writef(const char *, ...);
 
+typedef struct
+{
+	float n;
+	int bc, bg;
+} data;
+
+typedef struct
+{
+	float n;
+	int ld;
+	bool isBanh[2];
+} IBanhProperties;
+
+IBanhProperties banhChung, banhGiay;
+
 float readInt()
 {
 	float input;
@@ -64,15 +79,15 @@ bool isFibonacci(const int n)
 	return isPerfectSquare(5 * n * n + 4) || isPerfectSquare(5 * n * n - 4);
 }
 
-void swap(int *a, int *b)
+void swap(IBanhProperties *a, IBanhProperties *b)
 {
-	int t = *a;
+	IBanhProperties t = *a;
 	*a = *b, *b = t;
 }
 
-float cal(const float n, const float nPerBC, const float nPerBG, const int bc, const int bg)
+float cal(const float n, const int bc, const int bg)
 {
-	const float res = n - nPerBC * bc - nPerBG * bg;
+	const float res = n - banhChung.n * bc - banhGiay.n * bg;
 	if (res < 0)
 		return INT_MAX;
 	return res;
@@ -102,7 +117,7 @@ bool areAmicable(const int x, const int y)
 
 void solve(const int n, const int ld, const float dc, const float dg, const int w)
 {
-	int i, j;
+	short int i, j, z;
 	if (w == 'S')
 	{
 		i = ((int)(dc) % 6) - (ld % 5);
@@ -122,8 +137,17 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 	}
 
 	// Order: 1 (Banh chung); 2 (Banh giay); 3 (Bang nhau)
-	float nPerBC = makeBC(dc), nPerBG = makeBG(dg), arr[601][3];
-	int ldPerBC = (dc >= 8) + 1, ldPerBG = (dg >= 5) + 1, order[] = {1, 2, 3};
+	banhChung.n = makeBC(dc);
+	banhGiay.n = makeBG(dg);
+	banhChung.ld = (dc >= 8) + 1;
+	banhGiay.ld = (dg >= 5) + 1;
+	banhChung.isBanh[0] = banhGiay.isBanh[1] = 1;
+	banhChung.isBanh[1] = banhGiay.isBanh[0] = 0;
+	bool isEqual = false;
+
+	IBanhProperties order[3];
+	order[0].n = n, order[0].ld = 0, order[0].isBanh[0] = order[0].isBanh[1] = 0;
+	order[1] = banhChung, order[2] = banhGiay;
 
 	switch ((int)toupper(w))
 	{
@@ -131,12 +155,12 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 		break;
 
 	case 'O':
-		if (nPerBG > nPerBC)
-			swap(order, order + 1);
+		if (banhGiay.n > banhChung.n)
+			swap(order + 1, order + 2);
 		break;
 
 	case 'R':
-		swap(order + 2, order);
+		isEqual = true;
 		break;
 
 	case 'F':
@@ -152,7 +176,7 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 			writef("0 0 %d", n);
 			exit(0);
 		}
-		swap(order, order + 1);
+		swap(order + 1, order + 2);
 		break;
 
 	default:
@@ -161,46 +185,54 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 		break;
 	}
 
-	arr[0][0] = n, arr[0][1] = arr[0][2] = 0;
-	for (i = 1; i <= ld; i++) // la dong
-	{
-		float curN;
-		memcpy(arr[i], arr[i - 1], sizeof(int) * 3);
+	data arr[3][601]; // [Loai banh][La dong]
 
-		for (j = 0; j < 3; j++)
-			switch (order[j])
+	for (i = 0; i < 3; i++)			// Loai banh
+		for (j = 0; j <= ld; j++) // La dong
+		{
+			if (!i || !j)
 			{
-			case 1:
-				if (i >= ldPerBC && (curN = cal(arr[i - ldPerBC][0], nPerBC, nPerBG, 1, 0)) < arr[i][0])
-				{
-					arr[i][0] = curN;
-					arr[i][1] = arr[i - ldPerBC][1] + 1;
-					arr[i][2] = arr[i - ldPerBC][2];
-				}
-				break;
-
-			case 2:
-				if (i >= ldPerBG && (curN = cal(arr[i - ldPerBG][0], nPerBC, nPerBG, 0, 1)) < arr[i][0])
-				{
-					arr[i][0] = curN;
-					arr[i][1] = arr[i - ldPerBG][1];
-					arr[i][2] = arr[i - ldPerBG][2] + 1;
-				}
-				break;
-
-			case 3:
-				if (i >= ldPerBC + ldPerBG && (curN = cal(arr[i - ldPerBC - ldPerBG][0], nPerBC, nPerBG, 1, 1)) < arr[i][0])
-				{
-					arr[i][0] = curN;
-					arr[i][1] = arr[i - ldPerBC - ldPerBG][1] + 1;
-					arr[i][2] = arr[i - ldPerBC - ldPerBG][2] + 1;
-				}
-
-				break;
+				arr[i][j].n = n;
+				arr[i][j].bc = arr[i][j].bg = 0;
+				continue;
 			}
-	}
 
-	writef("%.0f %.0f %.3f", arr[ld][1], arr[ld][2], arr[ld][0]);
+			float curN;
+			memcpy(arr[i] + j, arr[i] + j - 1, sizeof(data));
+
+			for (z = 0; z < 2; z++)
+				switch (abs(z - isEqual))
+				{
+				case 0:
+					if (j >= order[i].ld)
+					{
+						if ((curN = cal(arr[i][j - order[i].ld].n, order[i].isBanh[0], order[i].isBanh[1])) < arr[i][j].n)
+						{
+							arr[i][j].n = curN;
+							arr[i][j].bc = arr[i][j - order[i].ld].bc + order[i].isBanh[0];
+							arr[i][j].bg = arr[i][j - order[i].ld].bg + order[i].isBanh[1];
+						}
+
+						if ((curN = cal(arr[i - 1][j - order[i].ld].n, order[i].isBanh[0], order[i].isBanh[1])) < arr[i][j].n)
+						{
+							arr[i][j].n = curN;
+							arr[i][j].bc = arr[i - 1][j - order[i].ld].bc + order[i].isBanh[0];
+							arr[i][j].bg = arr[i - 1][j - order[i].ld].bg + order[i].isBanh[1];
+						}
+					}
+					break;
+				case 1:
+					if ((curN = cal(arr[i - 1][j - order[i].ld - order[i - 1].ld].n, order[i].isBanh[0] + order[i - 1].isBanh[0], order[i].isBanh[1] + order[i - 1].isBanh[1])) < arr[i][j].n)
+					{
+						arr[i][j].n = curN;
+						arr[i][j].bc = arr[i - 1][j - order[i].ld].bc + order[i].isBanh[0] + order[i - 1].isBanh[0];
+						arr[i][j].bg = arr[i - 1][j - order[i].ld].bg + order[i].isBanh[1] + order[i - 1].isBanh[1];
+					}
+					break;
+				}
+		}
+
+	writef("%.0f %.0f %.3f", (float)arr[2][ld].bc, (float)arr[2][ld].bg, (float)arr[2][ld].n);
 }
 
 int main()
