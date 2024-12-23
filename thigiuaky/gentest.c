@@ -5,8 +5,10 @@
 #include <signal.h>
 #include <math.h>
 #include <stdbool.h>
-#include <ctype.h>
+#include <time.h>
 #include <limits.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 #define ll long long
 #define ull unsigned long long
@@ -23,9 +25,10 @@
 		goto ExitJmp;      \
 	}
 
-void open();
-void readf(const char *, ...);
+void open(char[]);
 void writef(const char *, ...);
+void writefi(const char *, ...);
+char *combineStrings(char *, char *);
 
 typedef struct
 {
@@ -41,22 +44,6 @@ typedef struct
 } IBanhProperties;
 
 IBanhProperties banhChung, banhGiay;
-
-float readInt()
-{
-	float input;
-
-	readf("%f", &input);
-
-	return input;
-}
-
-char readChar()
-{
-	char input;
-	readf("%s", &input);
-	return input;
-}
 
 float makeBC(float dc)
 {
@@ -173,14 +160,14 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 		if (areAmicable(n, ld))
 		{
 			writef("0 0 %d", n);
-			exit(0);
+			return;
 		}
 		swap(order + 1, order + 2);
 		break;
 
 	default:
 		writef("-1 -1 %d", n);
-		exit(0);
+		return;
 		break;
 	}
 
@@ -234,19 +221,54 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 	writef("%.0f %.0f %.3f", (float)arr[2][ld].bc, (float)arr[2][ld].bg, (float)arr[2][ld].n);
 }
 
+#define NUM_TEST 100
+const isReadFile = true;
 int main()
 {
-	open();
+	int i;
+	char snum[5], w[10];
 
-	float n = readInt(), dc = readInt(), dg = readInt(), ld = readInt(), w = readChar();
-
-	if (n > 2000 || dc < 0 || dg < 0 || ld < 1 || ld > 600)
+	srand(time(NULL));
+	for (i = 0; i < NUM_TEST; i++)
 	{
-		writef("-1 -1 %d", n);
-		return 0;
-	}
+		sprintf(snum, "%d", i);
 
-	solve(n, ld, dc, dg, w);
+		const char *dirName = combineStrings("test", snum);
+
+		mkdir(dirName, 0777);
+		open(combineStrings(dirName, "/"));
+
+		const int wi = rand() % 5;
+		switch (wi)
+		{
+		case 0:
+			strncpy(w, "Rain", 10);
+			break;
+
+		case 1:
+			strncpy(w, "Sun", 10);
+			break;
+
+		case 2:
+			strncpy(w, "Cloud", 10);
+			break;
+
+		case 3:
+			strncpy(w, "Fog", 10);
+			break;
+
+		case 4:
+			strncpy(w, "Wind", 10);
+			break;
+
+		default:
+			break;
+		}
+
+		const n = rand() % 2000 + 1, bc = rand() % 30, bg = rand() % 30, ld = rand() % 600 + 1;
+		writefi("%d %d %d %d %s", n, bc, bg, ld, w);
+		solve(n, ld, bc, bg, *w);
+	}
 
 	return 0;
 }
@@ -262,23 +284,29 @@ char *combineStrings(char *str1, char *str2)
 }
 
 FILE *inputFile, *outputFile;
-void open()
+void open(char *dirName)
 {
-	inputFile = fopen(combineStrings("input", ".INP"), "r");
-	if (inputFile == NULL)
-	{
-		printf(combineStrings(combineStrings("input", ".INP"), " not found"));
-		raise(SIGABRT);
-	}
+	inputFile = fopen(combineStrings(dirName, combineStrings("input", ".INP")), "w");
 
-	outputFile = fopen(combineStrings("output", ".OUT"), "w");
+	outputFile = fopen(combineStrings(dirName, combineStrings("output", ".OUT")), "w");
 }
 
 void readf(const char *fmt, ...)
 {
-	va_list args;
+	static va_list args;
 	va_start(args, fmt);
 	vfscanf(inputFile, fmt, args);
+	va_end(args);
+}
+
+void writefi(const char *fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	if (isReadFile)
+		vfprintf(inputFile, fmt, args);
+	else
+		vprintf(fmt, args);
 	va_end(args);
 }
 
@@ -286,6 +314,9 @@ void writef(const char *fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
-	vfprintf(outputFile, fmt, args);
+	if (isReadFile)
+		vfprintf(outputFile, fmt, args);
+	else
+		vprintf(fmt, args);
 	va_end(args);
 }
