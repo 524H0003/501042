@@ -265,7 +265,7 @@ int main()
 			break;
 		}
 
-		const n = rand() % 2000 + 1, bc = rand() % 30, bg = rand() % 30, ld = rand() % 600 + 1;
+		const n = rand() % 2000 + 1, bc = rand() % 16 + 1, bg = rand() % 16 + 1, ld = rand() % 600 + 1;
 		writefi("%d %d %d %d %s", n, bc, bg, ld, w);
 		solve(n, ld, bc, bg, *w);
 	}
