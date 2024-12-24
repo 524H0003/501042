@@ -115,9 +115,10 @@ bool areAmicable(const int x, const int y)
 	return (divSum(y) == x);
 }
 
+#define at(i, j) arr[i][j - order[i].ld].n, order[i].isBanh[0], order[i].isBanh[1]
 void solve(const int n, const int ld, const float dc, const float dg, const int w)
 {
-	short int i, j, z;
+	short int i, j, z, h;
 	if (w == 'S')
 	{
 		i = ((int)(dc) % 6) - (ld % 5);
@@ -145,7 +146,7 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 	bool isEqual = false;
 
 	IBanhProperties order[3];
-	order[0].n = n, order[0].ld = 0, order[0].isBanh[0] = order[0].isBanh[1] = 0;
+	order[0].n = order[0].ld = order[0].isBanh[0] = order[0].isBanh[1] = 0;
 	order[1] = banhChung, order[2] = banhGiay;
 
 	switch ((int)toupper(w))
@@ -164,7 +165,7 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 
 	case 'F':
 		if (isFibonacci(dc) && isFibonacci(dg))
-			return solve(n, ld, dc / 2, dg / 2, 'O');
+			return solve(n, ld, (int)dc / 2, (int)dg / 2, 'O');
 		else
 			return solve(n, ld, dc * 2, dg * 2, 'O');
 		break;
@@ -172,7 +173,7 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 	case 'C':
 		if (areAmicable(n, ld))
 		{
-			writef("0 0 %d", n);
+			writef("0 0 %.3f", (float)n);
 			exit(0);
 		}
 		swap(order + 1, order + 2);
@@ -186,6 +187,10 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 
 	data arr[3][601]; // [Loai banh][La dong]
 
+	for (i = 0; i < 3; i++)
+		for (j = 0; j <= ld; j++)
+			arr[i][j].n = 0;
+
 	for (i = 0; i < 3; i++)			// Loai banh
 		for (j = 0; j <= ld; j++) // La dong
 		{
@@ -197,38 +202,44 @@ void solve(const int n, const int ld, const float dc, const float dg, const int 
 			}
 
 			float curN;
-			memcpy(arr[i] + j, arr[i] + j - 1, sizeof(data));
+			if (!arr[i][j].n || arr[i][j].n > arr[i][j - 1].n)
+				memcpy(arr[i] + j, arr[i] + j - 1, sizeof(data));
 
 			for (z = 0; z < 2; z++)
 				switch (abs(z - isEqual))
 				{
 				case 0:
-					if (j >= order[i].ld)
+					if (j >= order[i].ld && (curN = cal(at(i, j))) < arr[i][j].n)
 					{
-						if ((curN = cal(arr[i][j - order[i].ld].n, order[i].isBanh[0], order[i].isBanh[1])) < arr[i][j].n)
-						{
-							arr[i][j].n = curN;
-							arr[i][j].bc = arr[i][j - order[i].ld].bc + order[i].isBanh[0];
-							arr[i][j].bg = arr[i][j - order[i].ld].bg + order[i].isBanh[1];
-						}
+						arr[i][j].n = curN;
+						arr[i][j].bc = arr[i][j - order[i].ld].bc + order[i].isBanh[0];
+						arr[i][j].bg = arr[i][j - order[i].ld].bg + order[i].isBanh[1];
+					}
 
-						if ((curN = cal(arr[i - 1][j - order[i].ld].n, order[i].isBanh[0], order[i].isBanh[1])) < arr[i][j].n)
-						{
-							arr[i][j].n = curN;
-							arr[i][j].bc = arr[i - 1][j - order[i].ld].bc + order[i].isBanh[0];
-							arr[i][j].bg = arr[i - 1][j - order[i].ld].bg + order[i].isBanh[1];
-						}
+					if (j >= order[i - 1].ld && (curN = cal(arr[i][j - order[i - 1].ld].n, order[i - 1].isBanh[0], order[i - 1].isBanh[1])) < arr[i][j].n)
+					{
+						arr[i][j].n = curN;
+						arr[i][j].bc = arr[i][j - order[i - 1].ld].bc + order[i - 1].isBanh[0];
+						arr[i][j].bg = arr[i][j - order[i - 1].ld].bg + order[i - 1].isBanh[1];
 					}
 					break;
 				case 1:
-					if ((curN = cal(arr[i - 1][j - order[i].ld - order[i - 1].ld].n, order[i].isBanh[0] + order[i - 1].isBanh[0], order[i].isBanh[1] + order[i - 1].isBanh[1])) < arr[i][j].n)
+					if (j >= order[i].ld + order[i - 1].ld && (curN = cal(arr[i - 1][j - order[i].ld - order[i - 1].ld].n, order[i].isBanh[0] + order[i - 1].isBanh[0], order[i].isBanh[1] + order[i - 1].isBanh[1])) < arr[i][j].n)
 					{
 						arr[i][j].n = curN;
-						arr[i][j].bc = arr[i - 1][j - order[i].ld].bc + order[i].isBanh[0] + order[i - 1].isBanh[0];
-						arr[i][j].bg = arr[i - 1][j - order[i].ld].bg + order[i].isBanh[1] + order[i - 1].isBanh[1];
+						arr[i][j].bc = arr[i - 1][j - order[i].ld - order[i - 1].ld].bc + order[i].isBanh[0] + order[i - 1].isBanh[0];
+						arr[i][j].bg = arr[i - 1][j - order[i].ld - order[i - 1].ld].bg + order[i].isBanh[1] + order[i - 1].isBanh[1];
 					}
 					break;
 				}
+
+			h = floor(arr[i][j].n / order[i].n);
+			if (h && h != SHRT_MIN && j + order[i].ld * h <= ld && (curN = cal(arr[i][j].n, order[i].isBanh[0] * h, order[i].isBanh[1] * h)) != INT_MAX)
+			{
+				arr[i][j + order[i].ld * h].n = curN;
+				arr[i][j + order[i].ld * h].bc = arr[i][j].bc + order[i].isBanh[0] * h;
+				arr[i][j + order[i].ld * h].bg = arr[i][j].bg + order[i].isBanh[1] * h;
+			}
 		}
 
 	writef("%.0f %.0f %.3f", (float)arr[2][ld].bc, (float)arr[2][ld].bg, (float)arr[2][ld].n);
@@ -240,9 +251,9 @@ int main()
 
 	float n = readInt(), dc = readInt(), dg = readInt(), ld = readInt(), w = readChar();
 
-	if (n > 2000 || dc < 0 || dg < 0 || ld < 1 || ld > 600)
+	if (n > 2000 || n < 0 || dc < 0 || dg < 0 || ld < 1 || ld > 600)
 	{
-		writef("-1 -1 %d", n);
+		writef("-1 -1 %.0f", n);
 		return 0;
 	}
 
